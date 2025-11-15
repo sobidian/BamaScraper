@@ -2,7 +2,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://bama.ir/car/detail-nzwjyxqd-dena-plus-basicmanual-1397"
+url = "https://bama.ir/car/detail-dsjqetgz-toyota-landcruiser4door-v64000cc-2013"
 
 response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
 soup = BeautifulSoup(response.text, "html.parser")
@@ -31,7 +31,7 @@ for item in soup.select(".bama-vehicle-detail-with-icon > div"):
             specs["سوخت"] = value
         elif "گیربکس" in label:
             specs["گیربکس"] = value
-        elif "رنگ" in label:
+        elif "رنگ بدنه" in label:  # تغییر: دقیقاً "رنگ بدنه" را چک کنید
             specs["رنگ بدنه"] = value
     except:
         continue
