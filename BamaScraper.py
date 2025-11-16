@@ -2,7 +2,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://bama.ir/car/detail-dsjqetgz-toyota-landcruiser4door-v64000cc-2013"
+url = "https://bama.ir/car/detail-xdj7kins-toyota-camry-gl-2007"
 
 response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
 soup = BeautifulSoup(response.text, "html.parser")
@@ -31,12 +31,16 @@ for item in soup.select(".bama-vehicle-detail-with-icon > div"):
             specs["سوخت"] = value
         elif "گیربکس" in label:
             specs["گیربکس"] = value
-        elif "رنگ بدنه" in label:  # تغییر: دقیقاً "رنگ بدنه" را چک کنید
+        elif "رنگ بدنه" in label:
             specs["رنگ بدنه"] = value
     except:
         continue
 
-# ذخیره (بدون فیلد url)
+# اضافه کردن selector جدید برای div:nth-child(4)
+additional_info_elem = soup.select_one(".bama-vehicle-detail-with-icon > div:nth-child(4) > p")
+additional_info = additional_info_elem.text.strip() if additional_info_elem else None
+
+# ذخیره (با فیلد اضافی)
 data = {
     "model_brand": model_brand,
     "model_variant": model_variant,
@@ -46,7 +50,8 @@ data = {
     "price": price,
     "kilometer": specs["کارکرد"],
     "fuel_type": specs["سوخت"],
-    "body_color": specs["رنگ بدنه"]
+    "body_color": specs["رنگ بدنه"],
+    "additional_info": additional_info 
 }
 
 with open("bama_car_final.json", "w", encoding="utf-8") as f:
